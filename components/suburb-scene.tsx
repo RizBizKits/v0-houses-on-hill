@@ -6,6 +6,7 @@ import { useState, useEffect } from "react"
 import { House } from "./house"
 import { Hill } from "./hill"
 import { Streetlight } from "./streetlight"
+import { useIsMobile } from "../hooks/use-mobile"
 
 export default function SuburbScene() {
   const [litHouses, setLitHouses] = useState<Set<number>>(new Set())
@@ -13,6 +14,7 @@ export default function SuburbScene() {
   const [showCountdown, setShowCountdown] = useState(false)
   const [daysLeft, setDaysLeft] = useState(0)
   const [mounted, setMounted] = useState(false)
+  const isMobile = useIsMobile()
 
   useEffect(() => {
     setMounted(true)
@@ -106,13 +108,17 @@ export default function SuburbScene() {
   return (
     <div className="w-full h-screen relative bg-slate-800">
       <div
-        className={`absolute top-20 left-1/2 transform -translate-x-1/2 z-10 transition-opacity duration-1000 ${
+        className={`absolute ${
+          isMobile ? "top-8" : "top-20"
+        } left-1/2 transform -translate-x-1/2 z-10 transition-opacity duration-1000 ${
           showTitle ? "opacity-100" : "opacity-0"
-        }`}
+        } ${isMobile ? "px-4" : ""}`}
       >
-        <h1 className="text-white text-9xl font-sarina text-center drop-shadow-2xl">The Great Lock In</h1>
+        <h1 className="text-white text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-sarina text-center drop-shadow-2xl leading-tight">
+          The Great Lock In
+        </h1>
         <p
-          className={`text-white text-2xl font-be-vietnam-pro font-medium text-center mt-4 drop-shadow-lg transition-opacity duration-1000 ${
+          className={`text-white text-lg sm:text-xl md:text-2xl font-be-vietnam-pro font-medium text-center mt-2 sm:mt-4 drop-shadow-lg transition-opacity duration-1000 ${
             showCountdown ? "opacity-100" : "opacity-0"
           }`}
         >
@@ -124,12 +130,12 @@ export default function SuburbScene() {
         <Canvas
           shadows
           gl={{
-            antialias: true,
+            antialias: !isMobile, // Disable antialiasing on mobile for better performance
             alpha: false,
-            powerPreference: "high-performance",
+            powerPreference: isMobile ? "default" : "high-performance", // Use default power on mobile
           }}
-          dpr={[1, 2]}
-          performance={{ min: 0.5 }}
+          dpr={isMobile ? [1, 1.5] : [1, 2]} // Lower DPR on mobile for performance
+          performance={{ min: isMobile ? 0.3 : 0.5 }} // Lower performance threshold on mobile
           onCreated={() => {}}
         >
           <PerspectiveCamera makeDefault position={[0, 8, 15]} />
@@ -138,8 +144,8 @@ export default function SuburbScene() {
             position={[10, 10, 5]}
             intensity={0.4}
             color="#3b82f6"
-            castShadow
-            shadow-mapSize={[256, 256]}
+            castShadow={!isMobile} // Disable shadows on mobile for performance
+            shadow-mapSize={isMobile ? [128, 128] : [256, 256]} // Lower shadow resolution on mobile
             shadow-camera-left={-15}
             shadow-camera-right={15}
             shadow-camera-top={15}
