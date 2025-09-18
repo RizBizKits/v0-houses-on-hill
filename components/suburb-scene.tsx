@@ -25,8 +25,13 @@ export default function SuburbScene() {
       const now = new Date()
       const nextYear = now.getFullYear() + 1
       const jan1 = new Date(nextYear, 0, 1) // January 1st of next year
-      const diffTime = jan1.getTime() - now.getTime()
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+
+      // Reset time to start of day for both dates to get exact day difference
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+      const targetDate = new Date(nextYear, 0, 1)
+      const diffTime = targetDate.getTime() - today.getTime()
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
+
       setDaysLeft(diffDays)
     }
 
@@ -125,9 +130,7 @@ export default function SuburbScene() {
           }}
           dpr={[1, 2]}
           performance={{ min: 0.5 }}
-          onCreated={(state) => {
-            console.log("[v0] Canvas created successfully", state)
-          }}
+          onCreated={() => {}}
         >
           <PerspectiveCamera makeDefault position={[0, 8, 15]} />
           <ambientLight intensity={0.3} color="#1e3a8a" />
