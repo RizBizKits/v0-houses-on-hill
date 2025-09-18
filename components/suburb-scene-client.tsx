@@ -13,7 +13,28 @@ const SuburbScene = dynamic(() => import("@/components/suburb-scene"), {
 export default function SuburbSceneClient() {
   const audioRef = useRef<HTMLAudioElement>(null)
   const [isPlaying, setIsPlaying] = useState(false)
-  const [showAudioButton, setShowAudioButton] = useState(true)
+  const [autoplayFailed, setAutoplayFailed] = useState(false)
+
+  useEffect(() => {
+    const attemptAutoplay = async () => {
+      if (audioRef.current) {
+        try {
+          audioRef.current.volume = 0.3
+          await audioRef.current.play()
+          setIsPlaying(true)
+          setAutoplayFailed(false)
+        } catch (error) {
+          console.log("Autoplay blocked by browser:", error)
+          setAutoplayFailed(true)
+          setIsPlaying(false)
+        }
+      }
+    }
+
+    // Small delay to ensure audio element is ready
+    const timer = setTimeout(attemptAutoplay, 100)
+    return () => clearTimeout(timer)
+  }, [])
 
   const toggleAudio = async () => {
     if (audioRef.current) {
@@ -25,7 +46,7 @@ export default function SuburbSceneClient() {
           audioRef.current.volume = 0.3
           await audioRef.current.play()
           setIsPlaying(true)
-          setShowAudioButton(false) // Hide button after first play
+          setAutoplayFailed(false)
         }
       } catch (error) {
         console.log("Audio play failed:", error)
@@ -50,15 +71,13 @@ export default function SuburbSceneClient() {
     <>
       <audio ref={audioRef} src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/257941__kane53126__night-time-amb-OFRajA5Q7nM7GnltnI5qcsBQpPO5Lt.wav" loop preload="auto" style={{ display: "none" }} />
 
-      {showAudioButton && (
-        <button
-          onClick={toggleAudio}
-          className="fixed top-4 right-4 z-50 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full backdrop-blur-sm transition-all duration-200"
-          title="Toggle ambient sound"
-        >
-          {isPlaying ? "🔊" : "🔇"}
-        </button>
-      )}
+      <button
+        onClick={toggleAudio}
+        className="fixed top-4 right-4 z-50 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full backdrop-blur-sm transition-all duration-200"
+        title={autoplayFailed && !isPlaying ? "Play ambient sound" : isPlaying ? "Mute sound" : "Unmute sound"}
+      >
+        {isPlaying ? "🔊" : "🔇"}
+      </button>
 
       <SuburbScene />
     </>
