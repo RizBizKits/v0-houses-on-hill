@@ -80,6 +80,29 @@ export default function SuburbSceneClient() {
       </button>
 
       <SuburbScene />
+
+      <footer className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-40">
+        <p className="text-xs text-white/40 text-center">
+          animated by{" "}
+          <a
+            href="https://www.rizwanakhan.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-white/60 transition-colors"
+          >
+            riz
+          </a>
+          {" + "}
+          <a
+            href="https://v0.dev/chat"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-white/60 transition-colors"
+          >
+            v0
+          </a>
+        </p>
+      </footer>
     </>
   )
 }
