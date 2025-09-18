@@ -21,11 +21,11 @@ const beVietnamPro = Be_Vietnam_Pro({
 
 export const metadata: Metadata = {
   title: "TGLI",
-  description: "The Great Lock In",
+  description: "The Great Lock In: Sept→Dec",
   generator: "v0.app",
   openGraph: {
     title: "TGLI",
-    description: "The Great Lock In",
+    description: "The Great Lock In: Sept→Dec",
     images: [
       {
         url: "/og-image.png",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "TGLI",
-    description: "The Great Lock In",
+    description: "The Great Lock In: Sept→Dec",
     images: ["/og-image.png"],
   },
   icons: {
